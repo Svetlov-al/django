@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block breadcrumbs %}
+    {% if perms.women.change_women %}
+        <p><a href="{% url 'edit_page' post.slug %}">Редактировать</a></p>
+    {% endif %}
+    {% with tags=post.tags.all %}
+        {% if tags %}
+            <ul class="tags-list">
+                <li>Теги</li>
+                    {% for t in tags %}
+                        <li><a href={{ t.get_absolute_url }}>{{ t.tag }}</a></li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    {% endwith %}
+{% endblock %}
+
+{% block content %}
+    <h1>{{ post.title }}</h1>
+    {% if post.photo %}
+        <p><img class="img-article-left" alt="Отсутствует" src="{{ post.photo.url }}"></p>
+    {% endif %}
+    {{ post.content|linebreaks }}
+    
+    <!-- Форма удаления -->
+    <form action="{% url 'delete_page' pk=object.pk %}" method="post">
+        {% csrf_token %}
+        <button type="submit">Удалить пост</button>
+    </form>
+{% endblock %}
